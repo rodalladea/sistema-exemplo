@@ -116,7 +116,7 @@ public class ClienteDAO {
                 cliente.setTelefone(rs.getString(3));
                 cliente.setIdade(rs.getInt(4));
                 cliente.setLimiteCredito(rs.getDouble(5));
-                cliente.setPais(paisDao.getPais(rs.getInt(6)));
+                cliente.setPais(paisDao.getPaisById(rs.getInt(6)));
 
                 listCliente.add(cliente);
             }
@@ -133,7 +133,7 @@ public class ClienteDAO {
 
     }
 
-    public ClienteDTO getCliente(int id) {
+    public ClienteDTO getClienteById(int id) {
         ClienteDTO cliente = new ClienteDTO();
 
         try (Connection conn = DriverManager.getConnection("jdbc:derby:database")) {
@@ -152,7 +152,39 @@ public class ClienteDAO {
                 cliente.setTelefone(rs.getString(3));
                 cliente.setIdade(rs.getInt(4));
                 cliente.setLimiteCredito(rs.getDouble(5));
-                cliente.setPais(paisDao.getPais(rs.getInt(6)));
+                cliente.setPais(paisDao.getPaisById(rs.getInt(6)));
+            }
+
+            rs.close();
+            pstm.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return cliente;
+    }
+
+    public ClienteDTO getClienteByNome(String nome) {
+        ClienteDTO cliente = new ClienteDTO();
+
+        try (Connection conn = DriverManager.getConnection("jdbc:derby:database")) {
+
+            PaisDAO paisDao = new PaisDAO();
+            String sql = "SELECT * FROM cliente WHERE nome=?";
+
+            PreparedStatement pstm = conn.prepareStatement(sql);
+            pstm.setString(1, nome);
+            log.info("Selecionando um cliente ...");
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                cliente.setId(rs.getInt(1));
+                cliente.setNome(rs.getString(2));
+                cliente.setTelefone(rs.getString(3));
+                cliente.setIdade(rs.getInt(4));
+                cliente.setLimiteCredito(rs.getDouble(5));
+                cliente.setPais(paisDao.getPaisById(rs.getInt(6)));
             }
 
             rs.close();

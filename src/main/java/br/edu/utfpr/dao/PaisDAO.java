@@ -14,15 +14,13 @@ public class PaisDAO {
         try (Connection conn = DriverManager.getConnection("jdbc:derby:database;create=true")) {
 
             log.info("Criando tabela pais ...");
-            int rows = conn.createStatement().executeUpdate("CREATE TABLE pais (" +
+            conn.createStatement().executeUpdate("CREATE TABLE pais (" +
                             "id int NOT NULL GENERATED ALWAYS AS IDENTITY," +
                             "nome varchar(255)," +
                             "sigla varchar(3)," +
                             "codTelefone int," +
                             "CONSTRAINT id_pais_pk PRIMARY KEY (id))");
 
-            if (rows > 0)
-                System.out.println("Tabela criada com sucesso.");
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -127,7 +125,7 @@ public class PaisDAO {
 
     }
 
-    public PaisDTO getPais(int id) {
+    public PaisDTO getPaisById(int id) {
         PaisDTO pais = new PaisDTO();
 
         try (Connection conn = DriverManager.getConnection("jdbc:derby:database")) {
@@ -136,6 +134,35 @@ public class PaisDAO {
 
             PreparedStatement pstm = conn.prepareStatement(sql);
             pstm.setInt(1, id);
+            log.info("Selecionando um pais ...");
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                pais.setId(rs.getInt(1));
+                pais.setNome(rs.getString(2));
+                pais.setSigla(rs.getString(3));
+                pais.setCodTelefone(rs.getInt(4));
+            }
+
+            rs.close();
+            pstm.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return pais;
+    }
+
+    public PaisDTO getPaisByNome(String nome) {
+        PaisDTO pais = new PaisDTO();
+
+        try (Connection conn = DriverManager.getConnection("jdbc:derby:database")) {
+
+            String sql = "SELECT * FROM pais WHERE nome=?";
+
+            PreparedStatement pstm = conn.prepareStatement(sql);
+            pstm.setString(1, nome);
             log.info("Selecionando um pais ...");
             ResultSet rs = pstm.executeQuery();
 
