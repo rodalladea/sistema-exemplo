@@ -13,8 +13,7 @@ public class ClienteDAO {
     public ClienteDAO() {
         try (Connection conn = DriverManager.getConnection("jdbc:derby:database;create=true")) {
 
-            log.info("Criando tabela cliente....");
-
+            log.info("Criando tabela cliente ...");
             conn.createStatement().execute("CREATE TABLE cliente (" +
                     "id int NOT NULL GENERATED ALWAYS AS IDENTITY," +
                     "nome varchar(255)," +
@@ -39,8 +38,9 @@ public class ClienteDAO {
             pstm.setString(2, cliente.getTelefone());
             pstm.setInt(3, cliente.getIdade());
             pstm.setDouble(4, cliente.getLimiteCredito());
-            pstm.setInt(5, cliente.getPais());
+            pstm.setInt(5, cliente.getPais().getId());
 
+            log.info("Inserindo cliente ...");
             int rows = pstm.executeUpdate();
             if(rows > 0)
                 System.out.println("Cliente inserido com sucesso.");
@@ -59,6 +59,7 @@ public class ClienteDAO {
             PreparedStatement pstm = conn.prepareStatement(sql);
             pstm.setInt(1, id);
 
+            log.info("Removendo cliente ...");
             int rows = pstm.executeUpdate();
             if (rows > 0)
                 System.out.println("Cliente excluido com sucesso.");
@@ -72,7 +73,7 @@ public class ClienteDAO {
 
     public void updateCliente(ClienteDTO cliente) {
         try (Connection conn = DriverManager.getConnection("jdbc:derby:database")) {
-            String sql = "UPDATE cliente SET nome=?, telefone=?, idade=?, limiteCredito=?, id_pais=?";
+            String sql = "UPDATE cliente SET nome=?, telefone=?, idade=?, limiteCredito=?, id_pais=? WHERE id=?";
 
             PreparedStatement pstm = conn.prepareStatement(sql);
 
@@ -80,8 +81,10 @@ public class ClienteDAO {
             pstm.setString(2, cliente.getTelefone());
             pstm.setInt(3, cliente.getIdade());
             pstm.setDouble(4, cliente.getLimiteCredito());
-            pstm.setInt(5, cliente.getPais());
+            pstm.setInt(5, cliente.getPais().getId());
+            pstm.setInt(6, cliente.getId());
 
+            log.info("Atualizando cliente ...");
             int rows = pstm.executeUpdate();
             if (rows > 0)
                 System.out.println("Cliente atualizado com sucesso");
@@ -98,9 +101,11 @@ public class ClienteDAO {
 
         try (Connection conn = DriverManager.getConnection("jdbc:derby:database")) {
 
+            PaisDAO paisDao = new PaisDAO();
             String sql = "SELECT * FROM cliente";
 
             Statement stm = conn.createStatement();
+            log.info("Selecionando todos clientes ...");
             ResultSet rs = stm.executeQuery(sql);
 
             while (rs.next()) {
@@ -111,7 +116,7 @@ public class ClienteDAO {
                 cliente.setTelefone(rs.getString(3));
                 cliente.setIdade(rs.getInt(4));
                 cliente.setLimiteCredito(rs.getDouble(5));
-                cliente.setPais(rs.getInt(6));
+                cliente.setPais(paisDao.getPais(rs.getInt(6)));
 
                 listCliente.add(cliente);
             }
@@ -133,10 +138,12 @@ public class ClienteDAO {
 
         try (Connection conn = DriverManager.getConnection("jdbc:derby:database")) {
 
+            PaisDAO paisDao = new PaisDAO();
             String sql = "SELECT * FROM cliente WHERE id=?";
 
             PreparedStatement pstm = conn.prepareStatement(sql);
             pstm.setInt(1, id);
+            log.info("Selecionando um cliente ...");
             ResultSet rs = pstm.executeQuery();
 
             while (rs.next()) {
@@ -145,7 +152,7 @@ public class ClienteDAO {
                 cliente.setTelefone(rs.getString(3));
                 cliente.setIdade(rs.getInt(4));
                 cliente.setLimiteCredito(rs.getDouble(5));
-                cliente.setPais(rs.getInt(6));
+                cliente.setPais(paisDao.getPais(rs.getInt(6)));
             }
 
             rs.close();
