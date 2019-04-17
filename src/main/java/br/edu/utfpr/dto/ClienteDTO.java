@@ -11,7 +11,7 @@ public class ClienteDTO {
     private int idade;
     private String telefone;
     private double limiteCredito;
-    private PaisDTO pais;
+    private int pais;
 
     public void setNome(String nome) throws NomeClienteMenor5Caracteres {
         if (nome.length() < 5)
@@ -20,7 +20,7 @@ public class ClienteDTO {
         this.nome = nome;
     }
 
-    public void setLimiteCredito() throws IdadeClienteInvalida {
+    /*public void setLimiteCredito() throws IdadeClienteInvalida {
         if (this.idade >= 0 && this.idade <= 18) {
             this.limiteCredito = 100;
         } else if (this.idade > 18 && this.idade <= 35) {
@@ -31,8 +31,8 @@ public class ClienteDTO {
             throw new IdadeClienteInvalida("Idade invalida");
         }
 
-        if (this.pais.getNome().equals("Brasil")) {
-            this.limiteCredito += 100;
-        }
-    }
+        //if (this.pais.getNome().equals("Brasil")) {
+        //    this.limiteCredito += 100;
+        //}
+    }*/
 }

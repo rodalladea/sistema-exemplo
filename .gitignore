@@ -1,3 +1,5 @@
 /**/*.iml
+/**/derby.log
 /**/.idea/
 /**/target/
+/**/database/
