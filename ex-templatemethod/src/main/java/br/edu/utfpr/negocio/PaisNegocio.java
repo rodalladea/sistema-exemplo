@@ -8,15 +8,18 @@ import java.util.List;
 
 public class PaisNegocio {
 
-    public void verifyNomePais(PaisDTO pais) throws NomePaisExiste {
+    private PaisDAO paisDao = new PaisDAO();
+
+    public void inserirPais(PaisDTO pais) throws NomePaisExiste {
 
         if (this.listPais().stream().anyMatch(c -> c.getNome().equalsIgnoreCase(pais.getNome())))
             throw new NomePaisExiste(pais.getNome());
+
+        paisDao.insertPais(pais);
     }
 
     public List<PaisDTO> listPais() {
-        PaisDAO paisDao = new PaisDAO();
-
         return paisDao.getListPais();
     }
+
 }

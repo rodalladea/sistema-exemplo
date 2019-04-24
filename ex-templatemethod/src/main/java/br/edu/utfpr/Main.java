@@ -21,26 +21,24 @@ public class Main {
 
 
 
-        /*try {
+        try {
             pais.setNome("Estados Unidos da America");
             pais.setSigla("EUA");
             pais.setCodTelefone(10);
 
-            paisNeg.verifyNomePais(pais);
-            paisDao.insertPais(pais);
+            paisNeg.inserirPais(pais);
         } catch (NomePaisExiste nomePaisExiste) {
-            nomePaisExiste.printStackTrace();
+          nomePaisExiste.printStackTrace();
         } catch (NomePaisNulo nomePaisNulo) {
             nomePaisNulo.printStackTrace();
-        }*/
+        }
 
 
         try {
-            cliente.setNome("Eduardo");
-            cliente.setIdade(-2);
+            cliente.setNome("Rodrigo");
+            cliente.setIdade(22);
             cliente.setTelefone("1014997554755");
             cliente.setPais(paisDao.getPaisByNome("Estados Unidos da America"));
-
             cliente.validateLimiteCredito();
 
             cliNeg.inserirCliente(cliente);

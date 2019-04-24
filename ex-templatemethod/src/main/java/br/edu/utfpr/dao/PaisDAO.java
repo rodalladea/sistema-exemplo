@@ -8,31 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log
-public class PaisDAO {
+public class PaisDAO extends TemplatePaisDAO {
 
     public PaisDAO() {
-        try (Connection conn = DriverManager.getConnection("jdbc:derby:database;create=true")) {
+        String sql = "CREATE TABLE pais (" +
+                "id int NOT NULL GENERATED ALWAYS AS IDENTITY," +
+                "nome varchar(255)," +
+                "sigla varchar(3)," +
+                "codTelefone int," +
+                "CONSTRAINT id_pais_pk PRIMARY KEY (id))";
 
-            log.info("Criando tabela pais ...");
-            conn.createStatement().executeUpdate("CREATE TABLE pais (" +
-                            "id int NOT NULL GENERATED ALWAYS AS IDENTITY," +
-                            "nome varchar(255)," +
-                            "sigla varchar(3)," +
-                            "codTelefone int," +
-                            "CONSTRAINT id_pais_pk PRIMARY KEY (id))");
-
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    public Connection getConn() throws SQLException {
-        return DriverManager.getConnection("jdbc:derby:database");
+        firstConnection(sql);
     }
 
     public void insertPais(PaisDTO pais) {
-        try (Connection conn = getConn()) {
+        try (Connection conn = connect()) {
             String sql = "INSERT INTO pais(nome, sigla, codTelefone) VALUES (?, ?, ?)";
 
             PreparedStatement pstm = conn.prepareStatement(sql);
@@ -54,7 +44,7 @@ public class PaisDAO {
     }
 
     public void removePais(int id) {
-        try (Connection conn = getConn()) {
+        try (Connection conn = connect()) {
             String sql = "DELETE FROM pais WHERE id=?";
 
             PreparedStatement pstm = conn.prepareStatement(sql);
@@ -73,7 +63,7 @@ public class PaisDAO {
     }
 
     public void updatePais(PaisDTO pais) {
-        try (Connection conn = getConn()) {
+        try (Connection conn = connect()) {
             String sql = "UPDATE pais SET nome=?, sigla=?, codTelefone=? WHERE id=?";
 
             PreparedStatement pstm = conn.prepareStatement(sql);
@@ -98,7 +88,7 @@ public class PaisDAO {
     public List<PaisDTO> getListPais() {
         List<PaisDTO> listPais = new ArrayList<>();
 
-        try (Connection conn = getConn()) {
+        try (Connection conn = connect()) {
 
             String sql = "SELECT * FROM pais";
 
@@ -132,7 +122,7 @@ public class PaisDAO {
     public PaisDTO getPaisById(int id) {
         PaisDTO pais = new PaisDTO();
 
-        try (Connection conn = getConn()) {
+        try (Connection conn = connect()) {
 
             String sql = "SELECT * FROM pais WHERE id=?";
 
@@ -161,7 +151,7 @@ public class PaisDAO {
     public PaisDTO getPaisByNome(String nome) {
         PaisDTO pais = new PaisDTO();
 
-        try (Connection conn = getConn()) {
+        try (Connection conn = connect()) {
 
             String sql = "SELECT * FROM pais WHERE nome=?";
 
