@@ -22,4 +22,12 @@ public class PaisNegocio {
         return paisDao.getListPais();
     }
 
+    public void atualizaPais(PaisDTO pais) { paisDao.updatePais(pais); }
+
+    public void excluiPais(int id) { paisDao.removePais(id); }
+
+    public PaisDTO paisPorID(int id) { return paisDao.getPaisById(id); }
+
+    public PaisDTO paisPorNome(String nome) { return paisDao.getPaisByNome(nome); }
+
 }

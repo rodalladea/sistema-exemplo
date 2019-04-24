@@ -1,8 +1,6 @@
 package br.edu.utfpr;
 
 
-import br.edu.utfpr.dao.ClienteDAO;
-import br.edu.utfpr.dao.PaisDAO;
 import br.edu.utfpr.dto.ClienteDTO;
 import br.edu.utfpr.dto.PaisDTO;
 import br.edu.utfpr.excecao.*;
@@ -12,8 +10,6 @@ import br.edu.utfpr.negocio.PaisNegocio;
 public class Main {
 
     public static void main(String[] args) {
-        PaisDAO paisDao = new PaisDAO();
-        ClienteDAO cliDao = new ClienteDAO();
         ClienteDTO cliente = new ClienteDTO();
         PaisDTO pais = new PaisDTO();
         ClienteNegocio cliNeg = new ClienteNegocio();
@@ -38,7 +34,7 @@ public class Main {
             cliente.setNome("Rodrigo");
             cliente.setIdade(22);
             cliente.setTelefone("1014997554755");
-            cliente.setPais(paisDao.getPaisByNome("Estados Unidos da America"));
+            cliente.setPais(paisNeg.paisPorNome("Estados Unidos da America"));
             cliente.validateLimiteCredito();
 
             cliNeg.inserirCliente(cliente);
@@ -51,7 +47,7 @@ public class Main {
             idadeInvalida.printStackTrace();
         }
 
-        System.out.println(cliDao.getListCliente());
-        System.out.println(paisDao.getListPais());
+        System.out.println(cliNeg.listCliente());
+        System.out.println(paisNeg.listPais());
     }
 }

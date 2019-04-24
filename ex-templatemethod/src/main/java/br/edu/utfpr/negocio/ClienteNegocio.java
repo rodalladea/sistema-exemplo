@@ -27,4 +27,12 @@ public class ClienteNegocio {
     public List<ClienteDTO> listCliente() {
         return clienteDao.getListCliente();
     }
+
+    public void atualizaCliente(ClienteDTO cliente) { clienteDao.updateCliente(cliente); }
+
+    public void excluiCliente(int id) { clienteDao.removeCliente(id); }
+
+    public ClienteDTO clientePorID(int id) { return clienteDao.getClienteById(id); }
+
+    public ClienteDTO clientePorNome(String nome) { return clienteDao.getClienteByNome(nome); }
 }
