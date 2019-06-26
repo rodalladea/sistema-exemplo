@@ -30,16 +30,6 @@ public class ServicoPais {
         this.paisDAO = paisDAO;
     }
 
-//    private List<PaisDTO> paises;
-//
-//    public ServicoPais() {
-//        paises = Stream.of(
-//            PaisDTO.builder().id(1).nome("Brasil").sigla("BR").codigoTelefone(55).build(),
-//            PaisDTO.builder().id(2).nome("Estados Unidos da América").sigla("EUA").codigoTelefone(33).build(),
-//            PaisDTO.builder().id(3).nome("Reino Unido").sigla("RU").codigoTelefone(44).build()
-//        ).collect(Collectors.toList());
-//    }
-
     @GetMapping ("/servico/pais")
     public ResponseEntity<List<Pais>> listar() {
     // public List<PaisDTO> listar() {

@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClienteModel {
+public class ClienteModelExibe {
     private Long id;
     private String nome;
     private int idade;
     private String telefone;
     private double limiteCredito;
-    private Long pais;
+    private PaisModel pais;
 }

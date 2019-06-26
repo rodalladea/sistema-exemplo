@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class PaisDTO {
-    private int id;
+    private Long id;
     private String nome;
     private String sigla;
     private int codigoTelefone;

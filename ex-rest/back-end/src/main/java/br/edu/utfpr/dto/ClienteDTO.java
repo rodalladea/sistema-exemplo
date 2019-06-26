@@ -7,12 +7,12 @@ import br.edu.utfpr.excecao.NomeClienteMenor5CaracteresException;
 @Data
 @Builder
 public class ClienteDTO {
-    private int id;
+    private Long id;
     private String nome;
     private int idade;
     private String telefone;
     private double limiteCredito;
-    private PaisDTO pais;
+    private Long pais;
 
     public void setNome(String nome) throws NomeClienteMenor5CaracteresException {
         if (nome.length() < 5)
