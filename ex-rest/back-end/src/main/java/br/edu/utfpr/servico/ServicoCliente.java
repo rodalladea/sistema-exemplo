@@ -6,9 +6,10 @@
 package br.edu.utfpr.servico;
 
 import br.edu.utfpr.dao.Cliente;
-import br.edu.utfpr.dao.ClienteDAO;
-import br.edu.utfpr.dao.PaisDAO;
 import br.edu.utfpr.dto.ClienteDTO;
+import br.edu.utfpr.excecao.NomeClienteJaExisteException;
+import br.edu.utfpr.negocio.ClienteNegocio;
+import br.edu.utfpr.negocio.PaisNegocio;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,58 +28,42 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ServicoCliente {
-    private final ClienteDAO clienteDAO;
-    private final PaisDAO paisDAO;
-
+    
+    private final ClienteNegocio cliNeg;
+    private final PaisNegocio paisNeg;
+    
     @Autowired
-    public ServicoCliente(ClienteDAO clienteDAO, PaisDAO paisDAO) {
-        this.clienteDAO = clienteDAO;
-        this.paisDAO = paisDAO;
+    public ServicoCliente(ClienteNegocio cliNeg, PaisNegocio paisNeg) {
+        this.cliNeg = cliNeg;
+        this.paisNeg = paisNeg;
     }
 
     @GetMapping ("/servico/cliente")
     public ResponseEntity<List<Cliente>> listar() {
     // public List<PaisDTO> listar() {
         // return paises;
-        return ResponseEntity.ok(this.clienteDAO.findAll());
+        return ResponseEntity.ok(this.cliNeg.listar());
     }
 
     @GetMapping ("/servico/cliente/{id}")
     public ResponseEntity<Cliente> listarPorId(@PathVariable Long id) {
-        Optional<Cliente> clienteEncontrado = this.clienteDAO.findById(id);
+        Optional<Cliente> clienteEncontrado = this.cliNeg.getById(id);
 
         return ResponseEntity.of(clienteEncontrado);
     }
 
     @PostMapping ("/servico/cliente")
-    public ResponseEntity<Cliente> criar (@RequestBody ClienteDTO clienteDTO) {
-        if (this.clienteDAO.findAll().stream().map(Cliente::getNome).anyMatch(e -> e.equals(clienteDTO.getNome()))) { 
-            return ResponseEntity.noContent().build();
-        } else {
-            Cliente cliente = new Cliente();
+    public ResponseEntity<ClienteDTO> criar (@RequestBody ClienteDTO clienteDTO) throws NomeClienteJaExisteException {
             
-            cliente.setNome(clienteDTO.getNome());
-            cliente.setIdade(clienteDTO.getIdade());
-            cliente.setTelefone(clienteDTO.getTelefone());
-            cliente.setLimiteCredito(clienteDTO.getLimiteCredito());
-            cliente.setPais(this.paisDAO.findById(clienteDTO.getPais()).get());
-            
-            this.clienteDAO.save(cliente);
-            return ResponseEntity.status(201).body(cliente);
-        }
-        
-//        this.paisDAO.save(pais);
-//
-//        return ResponseEntity.status(201).body(pais);
+        this.cliNeg.incluir(clienteDTO);
+        return ResponseEntity.status(201).body(clienteDTO);
+
     }
 
     @DeleteMapping ("/servico/cliente/{id}")
     public ResponseEntity excluir (@PathVariable Long id) {
         
-        Cliente cliente = this.clienteDAO.findAll().stream().filter(e -> e.getId().equals(id)).findAny().get();
-        
-        if (cliente != null) {
-            this.clienteDAO.delete(cliente);
+        if (this.cliNeg.excluir(id)) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -86,23 +71,10 @@ public class ServicoCliente {
     }
 
     @PutMapping ("/servico/cliente/{id}")
-    public ResponseEntity<Cliente> alterar (@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
-        Optional<Cliente> clienteExistente = this.clienteDAO.findAll().stream().filter(c -> c.getId() == id).findAny();
+    public ResponseEntity alterar (@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) throws NomeClienteJaExisteException {
         
-        Cliente cliente = new Cliente();
+        this.cliNeg.incluir(clienteDTO);
         
-        cliente.setId(id);
-        cliente.setNome(clienteDTO.getNome());
-        cliente.setIdade(clienteDTO.getIdade());
-        cliente.setTelefone(clienteDTO.getTelefone());
-        cliente.setLimiteCredito(clienteDTO.getLimiteCredito());
-        cliente.setPais(this.paisDAO.findById(clienteDTO.getPais()).get());
-        
-        this.clienteDAO.save(cliente);
-        
-        return ResponseEntity.of(clienteExistente);
-
-
-        
+        return ResponseEntity.noContent().build();
     }
 }
